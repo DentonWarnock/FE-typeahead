@@ -1,0 +1,23 @@
+.search-container {
+  text-align: center;
+  margin: 0 auto;
+  width: 70%;
+}
+
+input {
+  font-weight: bold;
+  width: 55%;
+  margin: 0 auto;
+  /* float: initial; */
+}
+
+.result {
+  text-align: left;
+  margin-left: 10%;
+  width: 75%;
+}
+
+.result:hover {
+  background: lightgray;
+  cursor: pointer;
+}
