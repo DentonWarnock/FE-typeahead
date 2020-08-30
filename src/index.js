@@ -154,6 +154,6 @@ const colorsList = [
 ];
 
 ReactDOM.render(
-  <Typeahead colorsList={colorsList} />,
+  <Typeahead list={colorsList} />,
   document.getElementById("root")
 );
