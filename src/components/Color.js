@@ -4,7 +4,9 @@ export default function Color({ color }) {
   return (
     <div
       className="color-element"
-      style={{ background: color || "white" }}
+      style={{
+        background: color || "white",
+      }}
     ></div>
   );
 }

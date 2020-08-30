@@ -1,28 +1,30 @@
 .search-container {
-  width: 40%;
-  text-align: center;
+  width: 55%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 input {
-  width: 40%;
-  min-width: 100px;
+  width: 55%;
+  min-width: 175px;
   height: 25px;
   padding: 10px;
   border: 1.5px solid black;
   font-size: 15px;
   border-radius: 6px;
-  margin-bottom: 5px;
+  margin: 5px auto;
   font-weight: bold;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .result {
   width: 100%;
+  min-width: 165px;
   height: 22px;
-  margin-right: 2rem;
-  margin-bottom: 2.5px;
+  margin: 1px auto;
   padding: 3px;
   display: flex;
 }

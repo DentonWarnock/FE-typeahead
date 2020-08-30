@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import Color from "./Color.js";
 import "../Styles/main.css";
 
@@ -9,19 +10,20 @@ export default function Typeahead(props) {
   const [foundMatch, setFoundMatch] = useState(false);
   const [match, setMatch] = useState("");
   const [display, setDisplay] = useState(false);
-  const displayRef = useRef(null);
+  const clickOutsideRef = useRef(null);
 
   useEffect(() => {
     if (!userSearch) {
       setDisplay(false);
-      // setFoundMatch(false);
+      setFoundMatch(false);
+      setMatch("");
     } else if (!foundMatch) {
       setDisplay(true);
     } else if (userSearch !== match) {
       setFoundMatch(false);
       setMatch("");
     }
-  }, [userSearch]);
+  }, [userSearch, match, foundMatch]);
 
   useEffect(() => {
     setOptions(list);
@@ -31,15 +33,18 @@ export default function Typeahead(props) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscapeKeyDown);
     };
-  }, []);
+  }, [list]);
 
   // close the list if user clicks outside of .result div
   const handleClickOutside = (event) => {
-    console.log(displayRef);
-    // const { current: click } = displayRef;
-    if (displayRef.current && !displayRef.current.contains(event.target)) {
+    console.log(clickOutsideRef);
+    // const { current: click } = clickOutsideRef;
+    if (
+      clickOutsideRef.current &&
+      !clickOutsideRef.current.contains(event.target)
+    ) {
       setDisplay(false);
-      // displayRef.current = null;
+      // clickOutsideRef.current = null;
     }
   };
 
@@ -88,16 +93,20 @@ export default function Typeahead(props) {
 
   const handleResultClick = (string) => {
     console.log("RESULT!!!!!!!!!!!!!!!!!!!!", string);
-    setUserSearch(string); // update input search
-    setFoundMatch(true); // prevents display from becoming true when input is changed
-    setDisplay(false); // close display options
-    setMatch(string);
+    setUserSearch(string); // update input to match the result (string)
+    setFoundMatch(true); // prevents display from becoming true when input field is changed by useEffect
+    setMatch(string); //
+    setDisplay(false); // close display view
   };
-
+  // detect when user presses enter on a result and treat same as click
   const handleEnterKeyPress = (handleResultClick) => ({ key }) => {
     if (key === "Enter") {
       handleResultClick();
     }
+  };
+
+  Typeahead.propTypes = {
+    list: PropTypes.arrayOf(PropTypes.string),
   };
 
   return (
@@ -116,7 +125,7 @@ export default function Typeahead(props) {
         />
 
         {display && (
-          <div ref={displayRef} className={"search-container"}>
+          <div ref={clickOutsideRef} className={"search-container"}>
             {filterOptions() &&
               filterOptions().map((div) => {
                 return div;
