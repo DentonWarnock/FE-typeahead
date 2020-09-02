@@ -31,7 +31,7 @@ input {
   height: 2rem;
   padding: 1rem;
   border: 1.5px solid black;
-  font-size: 2rem;
+  font-size: 1.75rem;
   border-radius: 5px;
   margin: 5px auto;
   font-weight: bold;
@@ -68,7 +68,7 @@ button:focus {
   margin: 0.5px;
   padding: 3px 10px;
   display: flex;
-  font-size: 2rem;
+  font-size: 1.75rem;
   background: whitesmoke;
   border: 2px solid whitesmoke;
   border-radius: 5px;

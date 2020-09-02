@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Color from "./Color.js";
+import Result from "./Result.js";
 import PropTypes from "prop-types";
 import Icon from "../images/search-tab-icon-png.png";
 import "../Styles/index.css";
@@ -32,14 +33,42 @@ export default function Typeahead({ list }) {
     if (userSearch) setDisplay(true);
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscapeKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscapeKeyDown);
-    };
-  }, []);
+  // return results from props.list that start with userSearch (case insensitive)
+  const filterList = () => {
+    if (userSearch) {
+      return list.filter((string) =>
+        string.toLowerCase().startsWith(userSearch.toLowerCase())
+      );
+    }
+  };
+
+  // when user clicks a result, make result string = input value / set result string as match / close display
+  const handleResultClick = (string) => {
+    setUserSearch(string); // update input to match the result (string)
+    setFoundMatch(true); // prevents display from becoming true when input field is changed by useEffect
+    setMatch(string); // will be sent as props to <Color/>
+    setDisplay(false);
+  };
+
+  // detect when user presses enter on a result and treat same as click
+  const handleEnterKeyResult = (handleResultClick) => (event) => {
+    if (event.key === "Enter") {
+      handleResultClick();
+    }
+  };
+
+  const handleEnterKeyInput = (event) => {
+    if (event.key === "Enter") {
+      handleResultClick(userSearch);
+    }
+  };
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    setFoundMatch(true);
+    setMatch(userSearch);
+    setDisplay(false);
+  };
 
   // when user clicks outside of input or the search-container --> close the display
   const handleClickOutside = (event) => {
@@ -56,68 +85,24 @@ export default function Typeahead({ list }) {
     }
   };
 
-  // when user enters input return exact matches from props.list as <Result />
-  const filterList = () => {
-    if (userSearch) {
-      return list
-        .filter((string) =>
-          string.toLowerCase().startsWith(userSearch.toLowerCase())
-        )
-        .map((string, index) => {
-          return formatResult(string, index);
-        });
-    }
-  };
-
-  const formatResult = (string, index) => {
-    const matchingSubStringBold = string.slice(0, userSearch.length);
-    const nonMatchingSubString = string.slice(userSearch.length);
-    return (
-      <div
-        className="result"
-        onClick={() => handleResultClick(string)}
-        onKeyPress={() => handleEnterKeyResult(handleResultClick(string))}
-        key={index}
-        tabIndex="0"
-      >
-        <b>{matchingSubStringBold}</b>
-        {nonMatchingSubString}
-        <Color color={string} />
-      </div>
-    );
-  };
-
-  const handleResultClick = (string) => {
-    setUserSearch(string); // update input to match the result (string)
-    setFoundMatch(true); // prevents display from becoming true when input field is changed by useEffect
-    setMatch(string);
-    setDisplay(false); // close display view
-  };
-
-  // detect when user presses enter on a result and treat same as click
-  const handleEnterKeyResult = (handleResultClick) => (event) => {
-    if (event.key === "Enter") {
-      handleResultClick();
-    } else {
-      handleInputChange(event);
-    }
-  };
-
-  const handleEnterKeyInput = (event) => {
-    if (event.key === "Enter") {
-      handleResultClick(userSearch);
-    }
-  };
-
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    setFoundMatch(true); // prevents display from becoming true when input field is changed by useEffect
-    setMatch(userSearch);
-    setDisplay(false); // close display view
-  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKeyDown);
+    };
+  }, []);
 
   Color.propTypes = {
     color: PropTypes.string,
+  };
+
+  Result.propTypes = {
+    resultString: PropTypes.string,
+    handleResultClick: PropTypes.func,
+    handleEnterKeyResult: PropTypes.func,
+    userSearch: PropTypes.string,
   };
 
   return (
@@ -136,6 +121,7 @@ export default function Typeahead({ list }) {
             onKeyPress={handleEnterKeyInput}
             autoComplete="off"
             spellCheck="false"
+            tabIndex="0"
           />
           <button tabIndex="-1" type="submit" className="button">
             <img src={Icon} alt="search" />
@@ -143,8 +129,16 @@ export default function Typeahead({ list }) {
         </form>
         {display &&
           filterList() &&
-          filterList().map((resultDiv) => {
-            return resultDiv;
+          filterList().map((string, index) => {
+            return (
+              <Result
+                resultString={string}
+                key={index}
+                userSearch={userSearch}
+                handleResultClick={handleResultClick}
+                handleEnterKeyResult={handleEnterKeyResult}
+              />
+            );
           })}
       </div>
     </>
