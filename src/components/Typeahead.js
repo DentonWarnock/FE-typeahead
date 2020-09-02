@@ -13,12 +13,15 @@ export default function Typeahead(props) {
 
   useEffect(() => {
     if (!userSearch) {
+      // empty input --> don't display and reset match state
       setDisplay(false);
       setFoundMatch(false);
       setMatch("");
     } else if (!foundMatch) {
+      // input and no match --> display results
       setDisplay(true);
     } else if (userSearch !== match) {
+      // input and match == true but now input has changed --> set match == false
       setFoundMatch(false);
       setMatch("");
     }
@@ -34,7 +37,7 @@ export default function Typeahead(props) {
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscapeKeyDown);
     return () => {
-      // clearnup event listeners
+      // cleanup event listeners
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscapeKeyDown);
     };
@@ -42,6 +45,7 @@ export default function Typeahead(props) {
 
   const handleClickOutside = (event) => {
     if (
+      // user clicks outside of input or results div --> close display results
       clickOutsideRef.current &&
       !clickOutsideRef.current.contains(event.target)
     )
@@ -54,7 +58,8 @@ export default function Typeahead(props) {
     }
   };
 
-  const filterOptions = () => {
+  // return
+  const filterList = () => {
     if (userSearch) {
       return list
         .filter((string) =>
@@ -67,8 +72,8 @@ export default function Typeahead(props) {
   };
 
   const formatResult = (string, index) => {
-    const matchingStringBold = string.slice(0, userSearch.length);
-    const nonMatchingString = string.slice(userSearch.length);
+    const matchingSubStringBold = string.slice(0, userSearch.length);
+    const nonMatchingSubString = string.slice(userSearch.length);
     return (
       <div
         className="result"
@@ -77,8 +82,8 @@ export default function Typeahead(props) {
         key={index}
         tabIndex="0"
       >
-        <b>{matchingStringBold}</b>
-        {nonMatchingString}
+        <b>{matchingSubStringBold}</b>
+        {nonMatchingSubString}
         <Color color={string} />
       </div>
     );
@@ -116,8 +121,8 @@ export default function Typeahead(props) {
           autoComplete="off"
         />
         {display &&
-          filterOptions() &&
-          filterOptions().map((resultDiv) => {
+          filterList() &&
+          filterList().map((resultDiv) => {
             return resultDiv;
           })}
       </div>
