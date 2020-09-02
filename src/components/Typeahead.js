@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Color from "./Color.js";
 import PropTypes from "prop-types";
+import Icon from "../images/search-tab-icon-png.png";
 import "../Styles/index.css";
 
-export default function Typeahead(props) {
-  const { list } = props;
+export default function Typeahead({ list }) {
   const [userSearch, setUserSearch] = useState("");
   const [foundMatch, setFoundMatch] = useState(false);
   const [match, setMatch] = useState("");
@@ -13,7 +13,7 @@ export default function Typeahead(props) {
 
   useEffect(() => {
     if (!userSearch) {
-      // empty input --> don't display and reset match state
+      // empty input --> don't display results and reset match state
       setDisplay(false);
       setFoundMatch(false);
       setMatch("");
@@ -21,7 +21,7 @@ export default function Typeahead(props) {
       // input and no match --> display results
       setDisplay(true);
     } else if (userSearch !== match) {
-      // input and match == true but now input has changed --> set match == false
+      // input and match == true but new input != match --> set match == false (this will hide the main <Color/>)
       setFoundMatch(false);
       setMatch("");
     }
@@ -33,19 +33,17 @@ export default function Typeahead(props) {
   };
 
   useEffect(() => {
-    // add event listeners
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscapeKeyDown);
     return () => {
-      // cleanup event listeners
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscapeKeyDown);
     };
   }, []);
 
+  // when user clicks outside of input or the search-container --> close the display
   const handleClickOutside = (event) => {
     if (
-      // user clicks outside of input or results div --> close display results
       clickOutsideRef.current &&
       !clickOutsideRef.current.contains(event.target)
     )
@@ -58,7 +56,7 @@ export default function Typeahead(props) {
     }
   };
 
-  // return
+  // when user enters input return exact matches from props.list as <Result />
   const filterList = () => {
     if (userSearch) {
       return list
@@ -78,7 +76,7 @@ export default function Typeahead(props) {
       <div
         className="result"
         onClick={() => handleResultClick(string)}
-        onKeyPress={() => handleEnterKeyPress(handleResultClick(string))}
+        onKeyPress={() => handleEnterKeyResult(handleResultClick(string))}
         key={index}
         tabIndex="0"
       >
@@ -95,11 +93,27 @@ export default function Typeahead(props) {
     setMatch(string);
     setDisplay(false); // close display view
   };
+
   // detect when user presses enter on a result and treat same as click
-  const handleEnterKeyPress = (handleResultClick) => ({ key }) => {
-    if (key === "Enter") {
+  const handleEnterKeyResult = (handleResultClick) => (event) => {
+    if (event.key === "Enter") {
       handleResultClick();
+    } else {
+      handleInputChange(event);
     }
+  };
+
+  const handleEnterKeyInput = (event) => {
+    if (event.key === "Enter") {
+      handleResultClick(userSearch);
+    }
+  };
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    setFoundMatch(true); // prevents display from becoming true when input field is changed by useEffect
+    setMatch(userSearch);
+    setDisplay(false); // close display view
   };
 
   Color.propTypes = {
@@ -110,16 +124,23 @@ export default function Typeahead(props) {
     <>
       <Color color={match} />
       <div ref={clickOutsideRef} className="search-container">
-        <input
-          id="search"
-          onClick={() => setDisplay(true)}
-          value={userSearch}
-          name="search"
-          type="text"
-          placeholder=" Search for a color"
-          onChange={handleInputChange}
-          autoComplete="off"
-        />
+        <form onSubmit={handleOnSubmit}>
+          <input
+            id="search"
+            placeholder=" Search for a color"
+            name="search"
+            type="text"
+            value={userSearch}
+            onClick={() => setDisplay(true)}
+            onChange={handleInputChange}
+            onKeyPress={handleEnterKeyInput}
+            autoComplete="off"
+            spellCheck="false"
+          />
+          <button type="submit" className="button">
+            <img src={Icon} />
+          </button>
+        </form>
         {display &&
           filterList() &&
           filterList().map((resultDiv) => {
