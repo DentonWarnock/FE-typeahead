@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import Typeahead from "./components/Typeahead";
 
 const colorsList = [
@@ -152,6 +153,10 @@ const colorsList = [
   "Yellow",
   "YellowGreen",
 ];
+
+Typeahead.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.string),
+};
 
 ReactDOM.render(
   <Typeahead list={colorsList} />,
