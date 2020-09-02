@@ -137,8 +137,8 @@ export default function Typeahead({ list }) {
             autoComplete="off"
             spellCheck="false"
           />
-          <button type="submit" className="button">
-            <img src={Icon} />
+          <button tabIndex="-1" type="submit" className="button">
+            <img src={Icon} alt="search" />
           </button>
         </form>
         {display &&
