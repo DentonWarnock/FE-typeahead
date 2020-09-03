@@ -1,8 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Typeahead from "../Typeahead.js";
+import Result from "../Result.js";
+
+const myTestFunction = () => {
+  return "test function";
+};
 
 it("renders without crashing", () => {
   const div = document.createElement("div");
-  ReactDOM.render;
+  ReactDOM.render(
+    <Result
+      resultString={"blue"}
+      handleResultClick={myTestFunction}
+      handleEnterKeyResult={myTestFunction}
+      userSearch="bl"
+    />,
+    div
+  );
 });

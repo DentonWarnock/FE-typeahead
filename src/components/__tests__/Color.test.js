@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Typeahead from "../Typeahead.js";
+import Color from "../Color.js";
 
 it("renders without crashing", () => {
   const div = document.createElement("div");
-  ReactDOM.render;
+  ReactDOM.render(<Color color={"blue"} />, div);
 });
