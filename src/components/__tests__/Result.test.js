@@ -6,8 +6,8 @@ const myTestFunction = () => {
   return "test function";
 };
 
-it("renders without crashing", () => {
-  const div = document.createElement("div");
+it("renders without crashing and displays results with text", () => {
+  const root = document.createElement("div");
   ReactDOM.render(
     <Result
       resultString={"blue"}
@@ -15,6 +15,10 @@ it("renders without crashing", () => {
       handleEnterKeyResult={myTestFunction}
       userSearch="bl"
     />,
-    div
+    root
+  );
+
+  expect(root.querySelector("div").innerHTML).toBe(
+    '<b>bl</b>ue<div data-testid="test-color-el" class="color-element" style="background: blue;"></div>'
   );
 });
