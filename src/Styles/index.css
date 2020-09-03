@@ -14,11 +14,15 @@ html {
 }
 
 .search-container {
-  width: 23rem;
+  width: 25rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+form {
+  position: relative;
 }
 
 input {
@@ -27,20 +31,44 @@ input {
   height: 2rem;
   padding: 1rem;
   border: 1.5px solid black;
-  font-size: 2rem;
+  font-size: 1.75rem;
   border-radius: 5px;
   margin: 5px auto;
   font-weight: bold;
 }
 
+.button {
+  height: 2.5rem;
+  width: 2.5rem;
+  background: white;
+  border: none;
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  right: 0px;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+
+.button img {
+  width: 2.75rem;
+  background: white;
+}
+
 .result {
-  width: 22rem;
+  width: 24rem;
   min-width: 180px;
   height: 22px;
   margin: 0.5px;
   padding: 3px 10px;
   display: flex;
-  font-size: 2rem;
+  font-size: 1.75rem;
   background: whitesmoke;
   border: 2px solid whitesmoke;
   border-radius: 5px;
